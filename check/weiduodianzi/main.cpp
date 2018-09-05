@@ -21,6 +21,8 @@
 																	zhjiehua
 	2018-07-08		V1.03		将时间常数参数改成修改数据缓冲区大小功能
 																	zhjiehua
+	2018-09-05		V1.04		当参比板上传的数据是0或无上传数据时，核心板依然上传AU值给PC
+																	zhjiehua
 */
 
 #include "baseMainPage.h"

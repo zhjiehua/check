@@ -136,8 +136,8 @@ bool AuAdjust::getdoubleAuVal( double *pAu1, double *pAu2 )
 	{
 		*pAu1 = last_au1;
 		*pAu2 = last_au2;
-		//return true;
-		return false;
+		return true;
+		//return false;
 	}
 
 	//从队列删除已经读取的au值;
@@ -245,8 +245,8 @@ bool AuAdjust::getAuValSingle( double *pAu1 )
 	if( m_singleAulist.isEmpty())
 	{
 		*pAu1 = last_au;
-		//return true;
-		return false;
+		return true;
+		//return false;
 	}
 
 	//从队列删除已经读取的au值;
