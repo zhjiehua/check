@@ -45,8 +45,8 @@ static unsigned long temp_read = 0;
 
 //check
 #ifdef WIN32
-#define MAINCOMPORT		"COM5"//上位机通讯接口
-#define MCUCOMPORT		"COM7"//单片机通讯接口
+#define MAINCOMPORT		"COM1"//上位机通讯接口
+#define MCUCOMPORT		"COM3"//单片机通讯接口
 #elif linux
 #define MAINCOMPORT		"/dev/ttySAC2"//上位机通讯接口
 #define MCUCOMPORT		"/dev/ttySAC1"//单片机通讯接口
@@ -237,7 +237,7 @@ qint16 writeFunc( quint8* data, uint16 sz )
 {
     qint16 ret = -1;
 	quint32 type = g_pWorker->getConnectPortType();
-    if( type == PC_COMMUNICATION_PORT_UART)
+    if( type == PC_COMMUNICATION_PORT_UART || type == PC_COMMUNICATION_PORT_ANALOG)
     {
         if(myCom)
         {
@@ -566,7 +566,10 @@ void Worker::setupCommunication()
     else if(m_nConnectPort == PC_COMMUNICATION_PORT_NET)
         setupNetworkCommunication();//张杰华添加@2016-06-23
 	else
+	{
 		initSPIDevice();
+		setupSerialCommunication();
+	}
 
 	setupMCUCommunication();
 
@@ -780,9 +783,9 @@ void Worker::uploadAuToPc(quint8 chanel, quint32 au , quint32 au2)
 		data.append(0x6d);
 		data.append(0x20);
 #if QT_VERSION >= 0x050000
-		data.append(QString("%1").arg(au, 6, 16, QLatin1Char('0')).toUpper().toLatin1());
+		data.append(QString("%1").arg(au2, 6, 16, QLatin1Char('0')).toUpper().toLatin1());
 #else
-		data.append(QString("%1").arg(au, 6, 16, QLatin1Char('0')).toUpper().toAscii());
+		data.append(QString("%1").arg(au2, 6, 16, QLatin1Char('0')).toUpper().toAscii());
 #endif
 		data.append(0x0d);
 		data.append(0x7f);
@@ -810,6 +813,10 @@ void Worker::uploadAuToPc(quint8 chanel, quint32 au , quint32 au2)
 	}
 	else
 	{
+		//模拟口同时输出模拟信号和数字信号
+		if(writeFunc((quint8 *)data.data(), data.size()) == -1)
+			qDebug() << "serial fatal error !!!!!!!!!!!!!!!!!!!!!!!!\n";
+
 		quint32 spi_temp;
 		quint32 spi_temp2;
 		quint16 temp;

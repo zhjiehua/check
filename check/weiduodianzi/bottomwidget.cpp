@@ -51,7 +51,7 @@ void BottomWidget::initNavigator()
 	m_btnList.append(ui.setBtn);
 #ifndef linux
 	m_btnList.append(ui.dbgBtn);
-	//ui.dbgBtn->hide();
+	//ui.dbgBtn->hide();//Òþ²Øµ÷ÊÔ°´¼ü
 #else
 	ui.dbgBtn->hide();
 #endif

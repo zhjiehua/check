@@ -759,6 +759,7 @@ void MachineStat::setWaveCtrlWordAndHome()
 void MachineStat::updateSampleVal(quint32 val)
 {
 	static bool sampleLowState = false;
+	static bool sample2LowState = false;
 
 	static quint32 lastSampleVal;
 	static quint32 lastSampleVal2;
@@ -893,17 +894,17 @@ void MachineStat::updateSampleVal(quint32 val)
 
 		if(m_machineStat.m_nSampleVal2 < LOWSAMPLEVAL)
 		{
-			if(!sampleLowState)
+			if(!sample2LowState)
 			{
-				sampleLowState = true;
+				sample2LowState = true;
 				emit(sampleLow(true));
 			}
 		}
 		else
 		{
-			if(sampleLowState)
+			if(sample2LowState)
 			{
-				sampleLowState = false;
+				sample2LowState = false;
 				emit(sampleLow(false));
 			}
 		}
@@ -914,6 +915,7 @@ void MachineStat::updateSampleVal(quint32 val)
 void MachineStat::updateRefVal(quint32 val)
 {
 	static bool refLowState = false;
+	static bool ref2LowState = false;
 
 	static quint32 lastRefVal;
 	static quint32 lastRefVal2;
@@ -1089,17 +1091,17 @@ void MachineStat::updateRefVal(quint32 val)
 
 		if(m_machineStat.m_nRefVal2 < LOWSAMPLEVAL)
 		{
-			if(!refLowState)
+			if(!ref2LowState)
 			{
-				refLowState = true;
+				ref2LowState = true;
 				emit(referenceLow(true));
 			}
 		}
 		else
 		{
-			if(refLowState)
+			if(ref2LowState)
 			{
-				refLowState = false;
+				ref2LowState = false;
 				emit(referenceLow(false));
 			}
 		}

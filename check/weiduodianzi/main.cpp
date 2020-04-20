@@ -23,6 +23,10 @@
 																	zhjiehua
 	2018-09-05		V1.04		当参比板上传的数据是0或无上传数据时，核心板依然上传AU值给PC
 																	zhjiehua
+	2019-04-24		V1.05		解决双波长时，双波长和单波长一样反应的bug，原因在发个PC的时候，都是发波长1的au值给PC，在LogicThread.cpp的uploadAuToPc()函数里。
+																	zhjiehua
+	2019-06-20		V1.06		模拟口同时输出模拟信号和串口数字信号。
+																	zhjiehua
 */
 
 #include "baseMainPage.h"
@@ -88,7 +92,7 @@ int main(int argc, char *argv[])
 	a.setFont(font);
 	BaseMainPage w("UV3000U");
 	w.resize(SCREEN_WIDTH, SCREEN_HEIGH);
-	
+
 #ifdef linux
 	QApplication::setOverrideCursor(Qt::BlankCursor);//隐藏鼠标
 	w.setWindowFlags(Qt::FramelessWindowHint);

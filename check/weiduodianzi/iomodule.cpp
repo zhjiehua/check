@@ -269,8 +269,11 @@ void IoModule::initLamp( quint8 which )
 
 void IoModule::magnitOn(bool on)
 {
-	/*if(on)
-	ioctl(fd, PWM_IOCTL_SET_IO, io);
+	qDebug()<<"magnitOn="<<on;
+#ifdef linux
+	if(on)
+		logic_set_io(IO_COIL_MASK, 1);
 	else
-	ioctl(fd, PWM_IOCTL_CLS_IO, io);*/
+		logic_set_io(IO_COIL_MASK, 0);
+#endif
 }	
