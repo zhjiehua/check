@@ -946,7 +946,8 @@ void MachineStat::updateRefVal(quint32 val)
 	quint32 average = 0;
 	quint32 outRefAverage = 0;
 	double cofficient = DataBase::getInstance()->queryData("coefficient").toDouble();
-	double au = 0;
+    double au = 0;
+    double localAu1, localAu2;
 	
 	if(m_machineStat.m_nCurrentWave == 0)//波长1;
 	{
@@ -1029,6 +1030,7 @@ void MachineStat::updateRefVal(quint32 val)
 			au = cofficient*log10(m_machineStat.m_dPercentOfRandS *(double)m_machineStat.m_nRefVal/(double)m_machineStat.m_nSampleVal);
 			//au = au/log10((double)2);//张杰华添加@2016-07-02
 
+            localAu1 = au;
 			double constVal = DataBase::getInstance()->getConstVal();
 			au = au*2.0/constVal;
 
@@ -1045,7 +1047,7 @@ void MachineStat::updateRefVal(quint32 val)
 
 		//qDebug() << "au = " << au;
 		
-		emit(updateAuValue(m_machineStat.m_nSampleVal, m_machineStat.m_nRefVal, au, m_machineStat.m_nCurrentWave));
+        emit(updateAuValue(m_machineStat.m_nSampleVal, m_machineStat.m_nRefVal, localAu1, m_machineStat.m_nCurrentWave));
 	}
 	else
 	{
@@ -1117,7 +1119,8 @@ void MachineStat::updateRefVal(quint32 val)
 			au = cofficient*log10(m_machineStat.m_dPercentOfRandS2 *(double)m_machineStat.m_nRefVal2/(double)m_machineStat.m_nSampleVal2);
 			//au = au/log10((double)2);//张杰华添加@2016-07-02
 
-			double constVal = DataBase::getInstance()->getConstVal();
+            localAu2 = au;
+            double constVal = DataBase::getInstance()->getConstVal();
 			au = au*2.0/constVal;
 
 			//平滑处理;
@@ -1129,7 +1132,7 @@ void MachineStat::updateRefVal(quint32 val)
 		DataBase::getInstance()->updateDate("au2", QString::number(au, 'f', 4));
 		m_machineStat.m_dAu2 = au;
 
-		emit(updateAuValue(m_machineStat.m_nSampleVal2, m_machineStat.m_nRefVal2, au, m_machineStat.m_nCurrentWave));
+        emit(updateAuValue(m_machineStat.m_nSampleVal2, m_machineStat.m_nRefVal2, localAu2, m_machineStat.m_nCurrentWave));
 	}
 }
 
@@ -1512,16 +1515,16 @@ qint32 MachineStat::uploadAuToPc()
 				if(nUploadAu1Temp < 0)
 					nUploadAu1Temp = 0;
 				quint32 nUploadAu1 = nUploadAu1Temp;
-				if(nUploadAu1 >= 0xffffff)
-					nUploadAu1 = 0xffffff;
+//				if(nUploadAu1 >= 0xffffff)
+//					nUploadAu1 = 0xffffff;
 
 				//au2 = au2*2/constVal;
 				qint32 nUploadAu2Temp = ((au2+2.0)/4.0*0xffffff); //张杰华修改@2016-06-15
 				if(nUploadAu2Temp < 0)
 					nUploadAu2Temp = 0;
 				quint32 nUploadAu2 = nUploadAu2Temp;
-				if(nUploadAu2 >= 0xffffff)
-					nUploadAu2 = 0xffffff;
+//				if(nUploadAu2 >= 0xffffff)
+//					nUploadAu2 = 0xffffff;
 
 				if(pcProtocol == 0)
 					m_pCommunicationCoupling->sendCmd(CMD_ASCII_DOUBLEWAV, nUploadAu1, nUploadAu2);
@@ -1555,8 +1558,8 @@ qint32 MachineStat::uploadAuToPc()
 				if(nUploadAu1Temp < 0)
 					nUploadAu1Temp = 0;
 				quint32 nUploadAu1 = nUploadAu1Temp;
-				if(nUploadAu1 >= 0xffffff)
-					nUploadAu1 = 0xffffff;
+//				if(nUploadAu1 >= 0xffffff)
+//					nUploadAu1 = 0xffffff;
 
 				if(pcProtocol == 0)
 				{
