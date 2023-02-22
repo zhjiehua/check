@@ -1519,8 +1519,9 @@ qint32 MachineStat::uploadAuToPc()
 //					nUploadAu1 = 0xffffff;
 
 				//au2 = au2*2/constVal;
-				qint32 nUploadAu2Temp = ((au2+2.0)/4.0*0xffffff); //张杰华修改@2016-06-15
-				if(nUploadAu2Temp < 0)
+//				qint32 nUploadAu2Temp = ((au2+2.0)/4.0*0xffffff); //张杰华修改@2016-06-15
+                qint32 nUploadAu2Temp = ((au2+2.5)/5.0*0xffffff); //张杰华修改@2016-06-15
+                if(nUploadAu2Temp < 0)
 					nUploadAu2Temp = 0;
 				quint32 nUploadAu2 = nUploadAu2Temp;
 //				if(nUploadAu2 >= 0xffffff)
@@ -1554,8 +1555,9 @@ qint32 MachineStat::uploadAuToPc()
 				//au = 1;
 				//qDebug() << "au = " << au;
 				//au = au*2/constVal;
-				qint32 nUploadAu1Temp = ((au+2.0)/4.0*0xffffff); //张杰华修改@2016-06-15
-				if(nUploadAu1Temp < 0)
+//				qint32 nUploadAu1Temp = ((au+2.0)/4.0*0xffffff); //张杰华修改@2016-06-15
+                qint32 nUploadAu1Temp = ((au+2.5)/5.0*0xffffff); //张杰华修改@2016-06-15
+                if(nUploadAu1Temp < 0)
 					nUploadAu1Temp = 0;
 				quint32 nUploadAu1 = nUploadAu1Temp;
 //				if(nUploadAu1 >= 0xffffff)
