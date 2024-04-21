@@ -1460,6 +1460,10 @@ void MachineStat::clearTunUsedTime()
 
 qint32 MachineStat::uploadAuToPc()
 {
+//    m_pCommunicationCoupling->sendCmd(CMD_ASCII_DOUBLEWAV, 0xAA, 0x55);
+//    m_pCommunicationCoupling->sendCmd(CMD_ASCII_WAVE_SAM_REF, m_machineStat.m_nSampleVal, m_machineStat.m_nRefVal);
+//    m_pCommunicationCoupling->sendCmd(CMD_ASCII_WAVE2_SAM_REF, m_machineStat.m_nSampleVal2, m_machineStat.m_nRefVal2);
+
 //#ifdef WIN32
 	if(m_machineStat.machineStat!= READY && m_machineStat.machineStat != LOCATINGWAVE) //张杰华修改@2016-06-24
 		return -1;
@@ -1510,39 +1514,44 @@ qint32 MachineStat::uploadAuToPc()
 				au2OutList.removeLast();
 				au2OutList << au2;
 
-				//au = au*2/constVal;
-				qint32 nUploadAu1Temp = ((au+2.0)/4.0*0xffffff); //张杰华修改@2016-06-15
-				if(nUploadAu1Temp < 0)
-					nUploadAu1Temp = 0;
-				quint32 nUploadAu1 = nUploadAu1Temp;
-//				if(nUploadAu1 >= 0xffffff)
-//					nUploadAu1 = 0xffffff;
+                //au = au*2/constVal;
+//                qint32 nUploadAu1Temp = ((au+2.0)/4.0*0xffffff); //张杰华修改@2016-06-15
+                qint32 nUploadAu1Temp = ((au+4.0)/8.0*0xffffff); //张杰华修改@2016-06-15
+                if(nUploadAu1Temp < 0)
+                    nUploadAu1Temp = 0;
+                quint32 nUploadAu1 = nUploadAu1Temp;
+//                if(nUploadAu1 >= 0xffffff)
+//                    nUploadAu1 = 0xffffff;
 
-				//au2 = au2*2/constVal;
-//				qint32 nUploadAu2Temp = ((au2+2.0)/4.0*0xffffff); //张杰华修改@2016-06-15
-                qint32 nUploadAu2Temp = ((au2+2.5)/5.0*0xffffff); //张杰华修改@2016-06-15
+                //au2 = au2*2/constVal;
+//                qint32 nUploadAu2Temp = ((au2+2.0)/4.0*0xffffff); //张杰华修改@2016-06-15
+                qint32 nUploadAu2Temp = ((au2+4.0)/8.0*0xffffff); //张杰华修改@2016-06-15
                 if(nUploadAu2Temp < 0)
 					nUploadAu2Temp = 0;
 				quint32 nUploadAu2 = nUploadAu2Temp;
 //				if(nUploadAu2 >= 0xffffff)
 //					nUploadAu2 = 0xffffff;
 
-				if(pcProtocol == 0)
-					m_pCommunicationCoupling->sendCmd(CMD_ASCII_DOUBLEWAV, nUploadAu1, nUploadAu2);
-				else
-				{
-					m_pCommunicationCoupling->sendCmdClarity(0, PFCC_SEND_AU, changeAuValtoClarity(au));
-					m_pCommunicationCoupling->sendCmdClarity(1, PFCC_SEND_AU, changeAuValtoClarity(au2));
-				}
-			}
-			else//单波长时候;
-			{
-				if( !AuAdjust::getInstance()->getAuValSingle(&au) )
-				{
-					//qDebug()<<"error.......................single wlen get au upload";
-					return -1;
-				}
-				//qDebug() << "au = "<< au;
+                if(pcProtocol == 0)
+                {
+                    m_pCommunicationCoupling->sendCmd(CMD_ASCII_DOUBLEWAV, nUploadAu1, nUploadAu2);
+                    m_pCommunicationCoupling->sendCmd(CMD_ASCII_WAVE_SAM_REF, m_machineStat.m_nSampleVal, m_machineStat.m_nRefVal);
+                    m_pCommunicationCoupling->sendCmd(CMD_ASCII_WAVE2_SAM_REF, m_machineStat.m_nSampleVal2, m_machineStat.m_nRefVal2);
+                }
+                else
+                {
+                    m_pCommunicationCoupling->sendCmdClarity(0, PFCC_SEND_AU, changeAuValtoClarity(au));
+                    m_pCommunicationCoupling->sendCmdClarity(1, PFCC_SEND_AU, changeAuValtoClarity(au2));
+                }
+            }
+            else//单波长时候;
+            {
+                if( !AuAdjust::getInstance()->getAuValSingle(&au) )
+                {
+                    //qDebug()<<"error.......................single wlen get au upload";
+                    return -1;
+                }
+                //qDebug() << "au = "<< au;
 
 				//4阶滤波
 				if(auOutList.count() > FILTER_LIST_MAX)
@@ -1552,11 +1561,11 @@ qint32 MachineStat::uploadAuToPc()
 				auOutList.removeLast();
 				auOutList << au;
 
-				//au = 1;
-				//qDebug() << "au = " << au;
-				//au = au*2/constVal;
-//				qint32 nUploadAu1Temp = ((au+2.0)/4.0*0xffffff); //张杰华修改@2016-06-15
-                qint32 nUploadAu1Temp = ((au+2.5)/5.0*0xffffff); //张杰华修改@2016-06-15
+                //au = 1;
+                //qDebug() << "au = " << au;
+                //au = au*2/constVal;
+//                qint32 nUploadAu1Temp = ((au+2.0)/4.0*0xffffff); //张杰华修改@2016-06-15
+                qint32 nUploadAu1Temp = ((au+4.0)/8.0*0xffffff); //张杰华修改@2016-06-15
                 if(nUploadAu1Temp < 0)
 					nUploadAu1Temp = 0;
 				quint32 nUploadAu1 = nUploadAu1Temp;
@@ -1569,41 +1578,42 @@ qint32 MachineStat::uploadAuToPc()
 					//nUploadAu1 = 0;
 					//qDebug() << "nUploadAu1 = " << nUploadAu1;
 
-					m_pCommunicationCoupling->sendCmd(CMD_ASCII_SINGLEWAV, nUploadAu1, 0);
-				}
-				else
-				{
-					m_pCommunicationCoupling->sendCmdClarity(0, PFCC_SEND_AU, changeAuValtoClarity(au));
-				}
-			}			
-		}
-		break;
-		//上传S值;
-		case 1:
-		{
-			quint32 sVal = 0;
-			if(m_machineStat.m_nCurrentWave == 0)//波1
-				sVal = m_machineStat.m_nSampleVal;
-			else//波2;
-				sVal = m_machineStat.m_nSampleVal2;
-			m_pCommunicationCoupling->sendCmd(CMD_ASCII_SVAL , sVal, 0);
-		}
-		break;
-		//上传R值;
-		case 2:
-		{
-			quint32 rVal = 0;
-			if(m_machineStat.m_nCurrentWave == 0)//波1
-				rVal = m_machineStat.m_nRefVal;
-			else
-				rVal = m_machineStat.m_nRefVal2;
-			m_pCommunicationCoupling->sendCmd(CMD_ASCII_RVAL, rVal, 0);
-		}
-		break;
-		default:
-			break;
-	}
-	return 0;
+                    m_pCommunicationCoupling->sendCmd(CMD_ASCII_SINGLEWAV, nUploadAu1, 0);
+                    m_pCommunicationCoupling->sendCmd(CMD_ASCII_WAVE_SAM_REF, m_machineStat.m_nSampleVal, m_machineStat.m_nRefVal);
+                }
+                else
+                {
+                    m_pCommunicationCoupling->sendCmdClarity(0, PFCC_SEND_AU, changeAuValtoClarity(au));
+                }
+            }
+        }
+        break;
+        //上传S值;
+        case 1:
+        {
+            quint32 sVal = 0;
+            if(m_machineStat.m_nCurrentWave == 0)//波1
+                sVal = m_machineStat.m_nSampleVal;
+            else//波2;
+                sVal = m_machineStat.m_nSampleVal2;
+            m_pCommunicationCoupling->sendCmd(CMD_ASCII_SVAL , sVal, 0);
+        }
+        break;
+        //上传R值;
+        case 2:
+        {
+            quint32 rVal = 0;
+            if(m_machineStat.m_nCurrentWave == 0)//波1
+                rVal = m_machineStat.m_nRefVal;
+            else
+                rVal = m_machineStat.m_nRefVal2;
+            m_pCommunicationCoupling->sendCmd(CMD_ASCII_RVAL, rVal, 0);
+        }
+        break;
+        default:
+            break;
+    }
+    return 0;
 }
 
 quint32 MachineStat::changeAuValtoClarity( double au )

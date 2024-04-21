@@ -4,7 +4,7 @@
 #include <BasePage.h>
 #include "ui_MsgPage.h"
 
-#define VERSION					"V1.07"
+#define VERSION					"V1.09"
 
 class MsgPage : public CBasePage
 {

@@ -24,6 +24,8 @@
 #define CMD_SYNC_COLLECT	3//使上位机软件自动进入采集图谱;
 #define CMD_ASCII_SVAL		4//上传S值;
 #define CMD_ASCII_RVAL		5//上传R值;
+#define CMD_ASCII_WAVE_SAM_REF		6//上传波长1的样本-参比值;
+#define CMD_ASCII_WAVE2_SAM_REF		7//上传波长2的样本-参比值;
 
 
 

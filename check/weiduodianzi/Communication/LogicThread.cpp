@@ -468,10 +468,14 @@ void Worker::CmdSend(quint8 type, quint32 cmd, quint32 arg)
 {
 	if(m_nPcProtocol == 0)//旧协议;
 	{
-		if(type == CMD_ASCII_SINGLEWAV || type == CMD_ASCII_SVAL || type == CMD_ASCII_RVAL)
-			uploadAuToPc(0, cmd, arg);
-		else if(type == CMD_ASCII_DOUBLEWAV)
-			uploadAuToPc(1, cmd, arg);
+        if(type == CMD_ASCII_SINGLEWAV || type == CMD_ASCII_SVAL || type == CMD_ASCII_RVAL)
+            uploadAuToPc(0, cmd, arg);
+        else if(type == CMD_ASCII_DOUBLEWAV)
+            uploadAuToPc(1, cmd, arg);
+        else if (type == CMD_ASCII_WAVE_SAM_REF)
+            uploadAuToPc(2, cmd, arg);
+        else if (type == CMD_ASCII_WAVE2_SAM_REF)
+            uploadAuToPc(3, cmd, arg);
 		else if(type == CMD_SYNC_COLLECT)//使上位机软件自动进入采集图谱
 			syncPCtoCollect();
 		else
@@ -789,8 +793,54 @@ void Worker::uploadAuToPc(quint8 chanel, quint32 au , quint32 au2)
 #endif
 		data.append(0x0d);
 		data.append(0x7f);
-	}
-	
+    }
+    else if (chanel == 2)// 上传波长1样本值-参比值
+    {
+        data.append(0x53);
+        data.append(0x4e);
+        data.append(0x20);
+#if QT_VERSION >= 0x050000
+        data.append(QString("%1").arg(au, 6, 16, QLatin1Char('0')).toUpper().toLatin1());
+#else
+        data.append(QString("%1").arg(au, 6, 16, QLatin1Char('0')).toUpper().toAscii());
+#endif
+        data.append(0x0d);
+
+        data.append(0x53);
+        data.append(0x6e);
+        data.append(0x20);
+#if QT_VERSION >= 0x050000
+        data.append(QString("%1").arg(au2, 6, 16, QLatin1Char('0')).toUpper().toLatin1());
+#else
+        data.append(QString("%1").arg(au2, 6, 16, QLatin1Char('0')).toUpper().toAscii());
+#endif
+        data.append(0x0d);
+        data.append(0x7f);
+    }
+    else // 上传波长2样本值-参比值
+    {
+        data.append(0x53);
+        data.append(0x4f);
+        data.append(0x20);
+#if QT_VERSION >= 0x050000
+        data.append(QString("%1").arg(au, 6, 16, QLatin1Char('0')).toUpper().toLatin1());
+#else
+        data.append(QString("%1").arg(au, 6, 16, QLatin1Char('0')).toUpper().toAscii());
+#endif
+        data.append(0x0d);
+
+        data.append(0x53);
+        data.append(0x6f);
+        data.append(0x20);
+#if QT_VERSION >= 0x050000
+        data.append(QString("%1").arg(au2, 6, 16, QLatin1Char('0')).toUpper().toLatin1());
+#else
+        data.append(QString("%1").arg(au2, 6, 16, QLatin1Char('0')).toUpper().toAscii());
+#endif
+        data.append(0x0d);
+        data.append(0x7f);
+    }
+
 	//张杰华修改@2016-06-22，串口尝试发送10次
 	//qint8 cnt = 0;
 	//qint16 sz = 0;
