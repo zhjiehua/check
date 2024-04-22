@@ -1548,7 +1548,6 @@ qint32 MachineStat::uploadAuToPc()
                     m_pCommunicationCoupling->sendCmdClarity(1, PFCC_SEND_SAM, m_machineStat.m_nSampleVal2);
                     m_pCommunicationCoupling->sendCmdClarity(1, PFCC_SEND_REF, m_machineStat.m_nRefVal2);
                 }
-                }
             }
             else//µ¥²¨³¤Ê±ºò;
             {
