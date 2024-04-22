@@ -93,6 +93,8 @@
 //以下为下位机主动发送的命令;
 #define PFCC_SEND_AU				0x90//读Au值命令;
 #define PFCC_INPUT_EVENT			0x91//发送输入事件;
+#define PFCC_SEND_SAM				0x96//发送样本值
+#define PFCC_SEND_REF				0x97//发送参比值
 
 //张杰华修改@2016-06-18，新协议
 #define PFCC_CHECK_INFO				0x92//开机发送检测重启信息;

@@ -1542,6 +1542,12 @@ qint32 MachineStat::uploadAuToPc()
                 {
                     m_pCommunicationCoupling->sendCmdClarity(0, PFCC_SEND_AU, changeAuValtoClarity(au));
                     m_pCommunicationCoupling->sendCmdClarity(1, PFCC_SEND_AU, changeAuValtoClarity(au2));
+  					
+					m_pCommunicationCoupling->sendCmdClarity(0, PFCC_SEND_SAM, m_machineStat.m_nSampleVal);
+                    m_pCommunicationCoupling->sendCmdClarity(0, PFCC_SEND_REF, m_machineStat.m_nRefVal);
+                    m_pCommunicationCoupling->sendCmdClarity(1, PFCC_SEND_SAM, m_machineStat.m_nSampleVal2);
+                    m_pCommunicationCoupling->sendCmdClarity(1, PFCC_SEND_REF, m_machineStat.m_nRefVal2);
+                }
                 }
             }
             else//µ¥²¨³¤Ê±ºò;
@@ -1584,6 +1590,9 @@ qint32 MachineStat::uploadAuToPc()
                 else
                 {
                     m_pCommunicationCoupling->sendCmdClarity(0, PFCC_SEND_AU, changeAuValtoClarity(au));
+
+					m_pCommunicationCoupling->sendCmdClarity(0, PFCC_SEND_SAM, m_machineStat.m_nSampleVal);
+                    m_pCommunicationCoupling->sendCmdClarity(0, PFCC_SEND_REF, m_machineStat.m_nRefVal);
                 }
             }
         }
