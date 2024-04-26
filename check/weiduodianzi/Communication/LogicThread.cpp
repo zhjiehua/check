@@ -771,7 +771,7 @@ void Worker::uploadAuToPc(quint8 chanel, quint32 au , quint32 au2)
 		data.append(0x0d);
 		data.append(0x7f);
 	}
-	else//Ë«²¨³¤;
+    else if (chanel == 1)//Ë«²¨³¤;
 	{
 		data.append(0x53);
 		data.append(0x4d);
