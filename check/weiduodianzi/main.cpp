@@ -48,7 +48,6 @@
 
     所以如果要解决这个问题，需要把波特率提高
 */
-*/
 
 #include "baseMainPage.h"
 //#if QT_VERSION >= 0x050000
