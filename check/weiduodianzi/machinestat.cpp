@@ -225,6 +225,9 @@ void MachineStat::initMachineStat()
 
 	m_machineStat.m_nUploadInterval = 0;
 
+    m_machineStat.m_uploadSamRefCnt = 0;
+    m_machineStat.m_isUploadSamRef = false;
+
 	m_machineStat.m_bLocateWaveSuccess = true;
 
 	//读取试用的当天日期;
@@ -1401,7 +1404,7 @@ double MachineStat::compensationForWave(double wave)
 		{
 			for (int i = 0; i<cnt; i++)
 			{
-				const LineUint &line = waveCompensationList.at(i);
+                const LineUint &line = waveCompensationList.at(i);
 				if(line.inRange(wave))
 				{
 					wave = line.getValueByXAndK(wave);//根据公式返回对应的流量值;
@@ -1479,7 +1482,14 @@ qint32 MachineStat::uploadAuToPc()
 	m_pCommunicationCoupling->sendCmdClarity(0, PFCC_SEND_AU, changeAuValtoClarity(au));
 	return;*/
 
-	//switch(m_machineStat.m_nUploadWhich)
+    m_machineStat.m_uploadSamRefCnt++;
+    if (m_machineStat.m_uploadSamRefCnt >= 10)
+    {
+        m_machineStat.m_uploadSamRefCnt = 0;
+        m_machineStat.m_isUploadSamRef = true;
+    }
+
+    //switch(m_machineStat.m_nUploadWhich)
 	quint8 which = 0;
 	switch(which)
 	{
@@ -1535,18 +1545,27 @@ qint32 MachineStat::uploadAuToPc()
                 if(pcProtocol == 0)
                 {
                     m_pCommunicationCoupling->sendCmd(CMD_ASCII_DOUBLEWAV, nUploadAu1, nUploadAu2);
-                    m_pCommunicationCoupling->sendCmd(CMD_ASCII_WAVE_SAM_REF, m_machineStat.m_nSampleVal, m_machineStat.m_nRefVal);
-                    m_pCommunicationCoupling->sendCmd(CMD_ASCII_WAVE2_SAM_REF, m_machineStat.m_nSampleVal2, m_machineStat.m_nRefVal2);
+
+                    if (m_machineStat.m_isUploadSamRef)
+                    {
+                        m_machineStat.m_isUploadSamRef = false;
+                        m_pCommunicationCoupling->sendCmd(CMD_ASCII_WAVE_SAM_REF, m_machineStat.m_nSampleVal, m_machineStat.m_nRefVal);
+                        m_pCommunicationCoupling->sendCmd(CMD_ASCII_WAVE2_SAM_REF, m_machineStat.m_nSampleVal2, m_machineStat.m_nRefVal2);
+                    }
                 }
                 else
                 {
                     m_pCommunicationCoupling->sendCmdClarity(0, PFCC_SEND_AU, changeAuValtoClarity(au));
                     m_pCommunicationCoupling->sendCmdClarity(1, PFCC_SEND_AU, changeAuValtoClarity(au2));
   					
-					m_pCommunicationCoupling->sendCmdClarity(0, PFCC_SEND_SAM, m_machineStat.m_nSampleVal);
-                    m_pCommunicationCoupling->sendCmdClarity(0, PFCC_SEND_REF, m_machineStat.m_nRefVal);
-                    m_pCommunicationCoupling->sendCmdClarity(1, PFCC_SEND_SAM, m_machineStat.m_nSampleVal2);
-                    m_pCommunicationCoupling->sendCmdClarity(1, PFCC_SEND_REF, m_machineStat.m_nRefVal2);
+                    if (m_machineStat.m_isUploadSamRef)
+                    {
+                        m_machineStat.m_isUploadSamRef = false;
+                        m_pCommunicationCoupling->sendCmdClarity(0, PFCC_SEND_SAM, m_machineStat.m_nSampleVal);
+                        m_pCommunicationCoupling->sendCmdClarity(0, PFCC_SEND_REF, m_machineStat.m_nRefVal);
+                        m_pCommunicationCoupling->sendCmdClarity(1, PFCC_SEND_SAM, m_machineStat.m_nSampleVal2);
+                        m_pCommunicationCoupling->sendCmdClarity(1, PFCC_SEND_REF, m_machineStat.m_nRefVal2);
+                    }
                 }
             }
             else//单波长时候;
@@ -1584,14 +1603,23 @@ qint32 MachineStat::uploadAuToPc()
 					//qDebug() << "nUploadAu1 = " << nUploadAu1;
 
                     m_pCommunicationCoupling->sendCmd(CMD_ASCII_SINGLEWAV, nUploadAu1, 0);
-                    m_pCommunicationCoupling->sendCmd(CMD_ASCII_WAVE_SAM_REF, m_machineStat.m_nSampleVal, m_machineStat.m_nRefVal);
+
+                    if (m_machineStat.m_isUploadSamRef)
+                    {
+                        m_machineStat.m_isUploadSamRef = false;
+                        m_pCommunicationCoupling->sendCmd(CMD_ASCII_WAVE_SAM_REF, m_machineStat.m_nSampleVal, m_machineStat.m_nRefVal);
+                    }
                 }
                 else
                 {
                     m_pCommunicationCoupling->sendCmdClarity(0, PFCC_SEND_AU, changeAuValtoClarity(au));
 
-					m_pCommunicationCoupling->sendCmdClarity(0, PFCC_SEND_SAM, m_machineStat.m_nSampleVal);
-                    m_pCommunicationCoupling->sendCmdClarity(0, PFCC_SEND_REF, m_machineStat.m_nRefVal);
+                    if (m_machineStat.m_isUploadSamRef)
+                    {
+                        m_machineStat.m_isUploadSamRef = false;
+                        m_pCommunicationCoupling->sendCmdClarity(0, PFCC_SEND_SAM, m_machineStat.m_nSampleVal);
+                        m_pCommunicationCoupling->sendCmdClarity(0, PFCC_SEND_REF, m_machineStat.m_nRefVal);
+                    }
                 }
             }
         }

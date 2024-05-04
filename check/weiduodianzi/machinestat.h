@@ -128,6 +128,9 @@ public:
 
 		quint32 m_nUploadInterval;					//上传au值间隔;
 
+        quint32 m_uploadSamRefCnt; 					// 上传样品-参比值计数器，500ms上传一次
+        bool m_isUploadSamRef; 						// 上传样品-参比值标志位
+
 
 		bool m_bLocateWaveSuccess;					//标志MCU已定位到波长;
 
